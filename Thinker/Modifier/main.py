@@ -22,6 +22,7 @@ norm = plt.Normalize(vmin=0, vmax=2)
 def convert(num: int):
     X = []
     Y = []
+    count = 0
     for file in os.listdir(os.path.join("input", str(num))):
         print(str(num) + "\t" + file)
         data = np.load(os.path.join(
@@ -33,20 +34,28 @@ def convert(num: int):
 
             X.append(d)
             Y.append(action)
-    np.save(os.path.join("data", "X-" + str(num)), X)
-    np.save(os.path.join("data", "Y-" + str(num)), Y)
-    print(str(num) + "\tfinished\t" + str(len(X)))
+            if 100000 < len(X):
+                np.save(os.path.join("data", "X-" +
+                                     str(num) + "-" + str(count)), X)
+                np.save(os.path.join("data", "Y-" +
+                                     str(num) + "-" + str(count)), Y)
+                print(str(num) + "\t" + str(count))
+                count += 1
+                X = []
+                Y = []
 
     count = 0
     if not os.path.exists(os.path.join(".", "data", str(num))):
         os.mkdir(os.path.join(".", "data", str(num)))
     for x in X:
-        plt.imsave(os.path.join("data", str(num), str(count)+".bmp"), cmap(norm(x)))
+        plt.imsave(os.path.join("data", str(num),
+                                str(count)+".bmp"), cmap(norm(x)))
         count += 1
         if count == 1024:
             break
     return len(X)
 
-convert(8)
-#with Pool(10) as p:
+
+convert(4)
+# with Pool(10) as p:
 #    print(p.map(convert, [1,2,3,4,5,6,7,8,9,10]))
