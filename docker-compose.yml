@@ -1,0 +1,11 @@
+version: "3.1"
+
+services:
+  php-server:
+    build: ./Server
+    volumes:
+      - "./Server/php.ini:/usr/local/etc/php/php.ini"
+    ports:
+      - "8080:80"
+  ai-server:
+    build: ./AI.Server
